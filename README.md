@@ -1,1 +1,1 @@
-# ping-pong-smart-contract
+# vote-smart-contract

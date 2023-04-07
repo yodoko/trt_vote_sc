@@ -1,8 +1,8 @@
 [package]
-name = "ping-pong-wasm"
+name = "vote-wasm"
 version = "0.0.1"
-authors = ["Bruda Claudiu-Marcel <claudiu725@yahoo.com>"]
-edition = "2018"
+authors = ["Benoit Frauly <benoit.frauly@outlook.com>"]
+edition = "2021"
 publish = false
 
 [lib]
@@ -15,7 +15,7 @@ opt-level = "z"
 lto = true
 debug = false
 panic = "abort"
-[dependencies.ping-pong]
+[dependencies.vote]
 path = ".."
 
 [dependencies.multiversx-sc-wasm-adapter]

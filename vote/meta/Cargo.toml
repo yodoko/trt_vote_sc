@@ -1,0 +1,11 @@
+[package]
+name = "vote-meta"
+version = "0.0.0"
+authors = ["Benoit Frauly <benoit.frauly@outlook.com>"]
+edition = "2021"
+publish = false
+[dependencies.vote]
+path = ".."
+
+[dependencies.multiversx-sc-meta]
+version = "0.39.5"
