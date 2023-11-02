@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
-// Endpoints:                           18
+// Endpoints:                           19
 // Async Callback (empty):               1
-// Total number of exported functions:  20
+// Total number of exported functions:  21
 
 #![no_std]
 #![feature(alloc_error_handler, lang_items)]
@@ -34,6 +34,7 @@ multiversx_sc_wasm_adapter::endpoints! {
         getNbVotesForCurrentRoundAndIdOption
         getVotesForCurrentRound
         getVotesForIdRound
+        hasVotedForIdRound
         getRounds
         getValidOptions
     )

@@ -28,7 +28,7 @@ ADDRESSBIDON="erd1x85f4zksuvezkycz94n52umdtvdhvlzhc6jn76k2n0fmymxqqydql7kh6n"
 SC_ADDRESS_1="erd1qqqqqqqqqqqqqpgqszyjcyp9xt6en6904zldzvntzfmyzq8emusqacj9vj"
 SC_ADDRESS_2="erd1qqqqqqqqqqqqqpgqjp9u39u4c5uutdpu49qd9dy4sw95674jmusqhc552y"
 SC_ADDRESS_3="erd1qqqqqqqqqqqqqpgq9qa97qfpzxu5kyk24nraw8r7dw07yz5xmusqzhws0e"
-SC_ADDRESS="erd1qqqqqqqqqqqqqpgqludp4hayf7nl04tp2898q6wp24p07z2kmusqg2hyzl"
+SC_ADDRESS="erd1qqqqqqqqqqqqqpgq5kdhkkjtvgjcgl2yelkj7nxtu8emwm04musqu3qsf7"
 
 
 build_voter() {
@@ -67,7 +67,7 @@ upgrade_voter() {
 }
 
 startRound() {
-    QUESTION="Shall we improve this dapp ?"
+    QUESTION="Would you like The Tavern to invest in Ternoa ?"
 
     (set -x; mxpy --verbose contract call "$SC_ADDRESS" \
     --pem=$USER_PEM \
@@ -82,8 +82,10 @@ startRound() {
 }
 
 addOptions() {
-    local OPTION1="No..."
-    local OPTION2="Yes !"
+    local OPTION1="Yes, 10 EGLD"
+    local OPTION2="Yes, 15 EGLD"
+    local OPTION3="Yes, 25 EGLD"
+    local OPTION4="No"
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
     --pem=$USER_PEM \
@@ -91,7 +93,7 @@ addOptions() {
     --function="addOptions" \
     --recall-nonce \
     --gas-limit=20000000 \
-    --arguments str:"$OPTION1" str:"$OPTION2" \
+    --arguments str:"$OPTION1" str:"$OPTION2" str:"$OPTION3" str:"$OPTION4" \
     --send \
     || return
     )

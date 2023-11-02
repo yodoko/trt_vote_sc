@@ -398,6 +398,19 @@ pub trait Voter {
         return result_final;
     }
 
+    #[view(hasVotedForIdRound)]
+    fn has_voted_for_id_round(&self, id_round: u32, address_connected: ManagedAddress) -> bool {
+        if self.voters().contains(&Holder {
+            id_proposal: id_round,
+            address: address_connected,
+            has_voted: true
+        }) {
+            return true;
+        }
+        return false;
+    }
+    
+
     // storage
 
     #[storage_mapper("voters")]

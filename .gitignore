@@ -13,3 +13,8 @@ Cargo.lock
 
 # VSCode config
 .vscode
+
+**/upgrade-devnet.interaction.json
+
+**/interaction/**.csv
+**/interaction/**.json
