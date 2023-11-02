@@ -18,3 +18,5 @@ Cargo.lock
 
 **/interaction/**.csv
 **/interaction/**.json
+
+.github
