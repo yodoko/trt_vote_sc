@@ -1,6 +1,6 @@
 """ 
 To run a function in this snippet :
-$ source /home/benoit/Bureau/TRT/Smart-contracts/Voting-SC/mx-vote-sc/vote/interaction/a_new_snippets.sh && functionToCall
+$ source /PATH/TO/FOLDER/vote/interaction/a_new_snippets.sh && functionToCall
 """
 VOTER_CONTRACT="../output/vote.wasm"
 
@@ -19,7 +19,7 @@ deploy_voter() {
     local OUTFILE="out-voter.json"
 
     (set -x; mxpy --verbose contract deploy --bytecode=$VOTER_CONTRACT \
-        --pem=$OWNER_PEM \
+        --pem=$USER_PEM \
         $PROXY_ARGUMENT $CHAIN_ARGUMENT \
         --outfile="$OUTFILE" --recall-nonce --gas-limit=600000000 \
         --send \
@@ -37,7 +37,7 @@ deploy_voter() {
 
 upgrade_voter() {
     (set -x; mxpy --verbose contract upgrade "$SC_ADDRESS" \
-    --pem=$OWNER_PEM --bytecode=$VOTER_CONTRACT \
+    --pem=$USER_PEM --bytecode=$VOTER_CONTRACT \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --gas-limit=60000000 \
     --outfile="upgrade-devnet.interaction.json" --recall-nonce \
@@ -47,10 +47,10 @@ upgrade_voter() {
 }
 
 startRound() {
-    QUESTION="What should be the threshold for rewards distribution per knight ?"
+    QUESTION="Shall we improve this dapp ?"
 
     (set -x; mxpy --verbose contract call "$SC_ADDRESS" \
-    --pem=$OWNER_PEM \
+    --pem=$USER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="startRound" \
     --recall-nonce \
@@ -62,17 +62,16 @@ startRound() {
 }
 
 addOptions() {
-    local OPTION1="0.05 EGLD"
-    local OPTION2="0.1 EGLD"
-    local OPTION3="0.2 EGLD"
+    local OPTION1="No..."
+    local OPTION2="Yes !"
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$OWNER_PEM \
+    --pem=$USER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="addOptions" \
     --recall-nonce \
     --gas-limit=20000000 \
-    --arguments str:"$OPTION1" str:"$OPTION2" str:"$OPTION3" \
+    --arguments str:"$OPTION1" str:"$OPTION2" \
     --send \
     || return
     )
@@ -82,7 +81,7 @@ endRound() {
     ROUND_ID=$1
 
     (set -x; mxpy --verbose contract call "$SC_ADDRESS" \
-    --pem=$OWNER_PEM \
+    --pem=$USER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="endRound" \
     --recall-nonce \
@@ -93,28 +92,36 @@ endRound() {
     )
 }
 
+
 addMultipleHolders() {
+    local A1=$1
+    local A2=$2
+    local A3=$3
+    local A4=$4
+    local A5=$5
+
     (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$OWNER_PEM \
+    --pem=$USER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="addVoters" \
     --recall-nonce \
     --gas-limit=20000000 \
-    --arguments ${ADDRESS1} ${ADDRESS2} ${ADDRESS3} ${ADDRESS4} ${ADDRESS5} ${ADDRESS6} ${ADDRESS7} ${ADDRESS8}\
+    --arguments ${A1} ${A2} ${A3} ${A4} ${A5} \
     --send \
     || return
     )
 }
 
 addHolder() {
+    local ADDRESS=$1
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$OWNER_PEM \
+    --pem=$USER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="addVoters" \
     --recall-nonce \
     --gas-limit=20000000 \
-    --arguments $1 \
+    --arguments ${ADDRESS} \
     --send \
     || return
     )
@@ -160,12 +167,12 @@ getVotesForIdRound() {
 
 hasVotedForIdRound() {
     local ROUND=$1
-    local ADDRESS_VOTER=erd1gmawg88dsmef3ltchdljpt863gwm0w8tq36nz74qdsglqj5rx8zqs4wlpa
+    local ADDRESS=$2
 
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
     --function="hasVotedForIdRound" \
-    --arguments ${ROUND} ${ADDRESS_VOTER}
+    --arguments ${ROUND} ${ADDRESS}
     )
 }
 
@@ -209,6 +216,23 @@ getCurrentRoundOptions() {
     )
 }
 
+vote() {
+    local ID=$1
+    local OPTION=$2
+
+    (set -x; mxpy contract call "$SC_ADDRESS" \
+    --pem=$USER_PEM \
+    $PROXY_ARGUMENT \
+    --function="vote" \
+    --recall-nonce \
+    --gas-limit=6000000 \
+    --arguments ${ID} ${OPTION} \
+    --send \
+    || return
+
+    )
+}
+
 getNbVotesForIdRoundAndIdOption() {
     local ROUND=$1
     local OPTION=$2
@@ -234,14 +258,12 @@ checkVotersAddresses() {
     --function="getVotersAddresses"
     )
 }
-
 checkVotes() {
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
     --function="getVotes"
     )
 }
-
 getNbVotesForProposalIdAndOption() {
     local ID=$1
     local OPTION=$2
@@ -249,31 +271,5 @@ getNbVotesForProposalIdAndOption() {
     $PROXY_ARGUMENT \
     --function="nbVotesForProposalIdOption" \
     --arguments ${ID} ${OPTION}
-    )
-}
-
-
-vote() {
-    local ID=$1
-    local OPTION=$2
-
-    (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$OWNER_PEM \
-    $PROXY_ARGUMENT \
-    --function="vote" \
-    --recall-nonce \
-    --gas-limit=6000000 \
-    --arguments ${ID} ${OPTION} \
-    --send \
-    || return
-
-    )
-}
-# getCurrentExchangeRate
-
-getCurrentExchangeRate() {
-    (set -x; mxpy contract query erd1qqqqqqqqqqqqqpgq35qkf34a8svu4r2zmfzuztmeltqclapv78ss5jleq3 \
-    $PROXY_ARGUMENT \
-    --function="getCurrentExchangeRate"
     )
 }
