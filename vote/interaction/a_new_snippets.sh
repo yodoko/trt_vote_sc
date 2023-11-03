@@ -1,33 +1,14 @@
 """ 
 To run a function in this snippet :
-$ source /home/benoit/Bureau/TRT/Smart-contracts/Voting-SC/mx-vote-sc/vote/interaction/a_new_snippets.sh && functionToCall
+$ source /PATH/TO/FOLDER/vote/interaction/a_new_snippets.sh && functionToCall
 """
-PEM_FILE="./ping-pong.pem"
 VOTER_CONTRACT="../output/vote.wasm"
-ADDER_CONTRACT="output/adder.wasm"
 
 USER_PEM="../wallet/wallet-owner.pem"
-TEST_PEM="wallet/wallet-test.pem"
-TEST_PEM_2="wallet/wallet-test-2.pem"
+
 PROXY_ARGUMENT="--proxy=https://devnet-gateway.multiversx.com"
 CHAIN_ARGUMENT="--chain=D"
 
-ADDRESSBIDON="erd1x85f4zksuvezkycz94n52umdtvdhvlzhc6jn76k2n0fmymxqqydql7kh"
-ADDRESS1="erd1dlxwydw4j6qxpyckkqf6j2rmzj86qv32ndnun23pxj00z5ctmusq8z7xjm"
-ADDRESS2="erd1gmawg88dsmef3ltchdljpt863gwm0w8tq36nz74qdsglqj5rx8zqs4wlpa"
-ADDRESS3="erd1zq7ksw2xdmx2a2u5hp7sx99q9rtwc0264yzhwewu7qn0mkj3v8esq6ujam"
-ADDRESS4="erd1j780ukjyynka96ye35ldzfqc7egqfhasdtndr0wy7v5r2t2h4sxqzkhw0a"
-ADDRESS5="erd1zs5d2zerz2d884vl5mtdf995rnwq3qeswy4s95x8nynkw4ctqz2qczw7zh"
-ADDRESS6="erd1rkw3qc0esse3c8d22zgn56hkfgsyjda3wlmp3qmqx5h5hftwqvzqfean87"
-ADDRESS7="erd1gn92uccz28ch6lpqnyg407zcfzra62px5da4sdf5tksp8urg92qqar7tk6"
-ADDRESS8="erd1a6506smh2h0ql5pcvjl4svjmlukgmdu35evuhladu0z4ujr92k4sx9lgra"
-ADDRESS9="erd1ggke2c38pgmuzreqx6ly0ew04544gpa0ggl8cw44drjc9sseyajqw4ncw9"
-ADDRESSMAX="erd1jmugpsnlnq7jwgzejzklq43r0865pyv6ead2fqxs8mtdjrkasqkq997asn"
-ADDRESSBIDON="erd1x85f4zksuvezkycz94n52umdtvdhvlzhc6jn76k2n0fmymxqqydql7kh6n"
-
-SC_ADDRESS_1="erd1qqqqqqqqqqqqqpgqszyjcyp9xt6en6904zldzvntzfmyzq8emusqacj9vj"
-SC_ADDRESS_2="erd1qqqqqqqqqqqqqpgqjp9u39u4c5uutdpu49qd9dy4sw95674jmusqhc552y"
-SC_ADDRESS_3="erd1qqqqqqqqqqqqqpgq9qa97qfpzxu5kyk24nraw8r7dw07yz5xmusqzhws0e"
 SC_ADDRESS="erd1qqqqqqqqqqqqqpgqludp4hayf7nl04tp2898q6wp24p07z2kmusqg2hyzl"
 
 
@@ -114,7 +95,11 @@ endRound() {
 
 
 addMultipleHolders() {
-    local a3=erd1qqqqqqqqqqqqqpgq9rjd7z4h2c6806k8nmhcskayw2j7t05pv8es0qh93y
+    local A1=$1
+    local A2=$2
+    local A3=$3
+    local A4=$4
+    local A5=$5
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
     --pem=$USER_PEM \
@@ -122,13 +107,14 @@ addMultipleHolders() {
     --function="addVoters" \
     --recall-nonce \
     --gas-limit=20000000 \
-    --arguments ${a3} ${ADDRESS1} ${ADDRESS2} ${ADDRESS3} ${ADDRESS4} ${ADDRESS5} ${ADDRESS6} ${ADDRESS7} ${ADDRESS8}\
+    --arguments ${A1} ${A2} ${A3} ${A4} ${A5} \
     --send \
     || return
     )
 }
 
 addHolder() {
+    local ADDRESS=$1
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
     --pem=$USER_PEM \
@@ -136,7 +122,7 @@ addHolder() {
     --function="addVoters" \
     --recall-nonce \
     --gas-limit=20000000 \
-    --arguments $1 \
+    --arguments ${ADDRESS} \
     --send \
     || return
     )
@@ -171,7 +157,7 @@ getVotesForCurrentRound() {
 }
 
 getVotesForIdRound() {
-    local ROUND=3
+    local ROUND=$1
 
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
@@ -181,21 +167,23 @@ getVotesForIdRound() {
 }
 
 hasVotedForIdRound() {
-    local ROUND=3
-    local ADDRESS_VOTER=erd1gmawg88dsmef3ltchdljpt863gwm0w8tq36nz74qdsglqj5rx8zqs4wlpa
+    local ROUND=$1
+    local ADDRESS=$2
 
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
     --function="hasVotedForIdRound" \
-    --arguments ${ROUND} ${ADDRESS_VOTER}
+    --arguments ${ROUND} ${ADDRESS}
     )
 }
 
 getNbHoldersForIdRound() {
+    local ROUND=$1
+
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
     --function="getNbHoldersForIdRound" \
-    --arguments 1
+    --arguments ${ROUND}
     )
 }
 
@@ -207,10 +195,12 @@ getNbHoldersForCurrentRound() {
 }
 
 getNbVotersForIdRound() {
+    local ROUND=$1
+
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
     --function="getNbVotersForIdRound" \
-    --arguments 1
+    --arguments ${ROUND}
     )
 }
 getNbVotersForCurrentRound() {
@@ -227,60 +217,9 @@ getCurrentRoundOptions() {
     )
 }
 
-
-
-voteTest() {
-    local ID=0
-    local OPTION=3
-
-    (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$TEST_PEM \
-    $PROXY_ARGUMENT \
-    --function="vote" \
-    --recall-nonce \
-    --gas-limit=6000000 \
-    --arguments ${ID} ${OPTION} \
-    --send \
-    || return
-
-    )
-}
-voteTest2() {
-    local ID=2
-    local OPTION=3
-
-    (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$TEST_PEM_2 \
-    $PROXY_ARGUMENT \
-    --function="vote" \
-    --recall-nonce \
-    --gas-limit=6000000 \
-    --arguments ${ID} ${OPTION} \
-    --send \
-    || return
-
-    )
-}
-voteTestWorking() {
-    local ID=1
-    local OPTION=3
-
-    (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$TEST_PEM \
-    $PROXY_ARGUMENT \
-    --function="vote" \
-    --recall-nonce \
-    --gas-limit=6000000 \
-    --arguments ${ID} ${OPTION} \
-    --send \
-    || return
-
-    )
-}
-
 vote() {
-    local ID=1
-    local OPTION=2
+    local ID=$1
+    local OPTION=$2
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
     --pem=$USER_PEM \
@@ -296,8 +235,8 @@ vote() {
 }
 
 getNbVotesForIdRoundAndIdOption() {
-    local ROUND=1
-    local OPTION=2
+    local ROUND=$1
+    local OPTION=$2
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
     --function="getNbVotesForIdRoundAndIdOption" \
@@ -306,7 +245,7 @@ getNbVotesForIdRoundAndIdOption() {
 }
 
 getNbVotesForCurrentRoundAndIdOption() {
-    local OPTION=3
+    local OPTION=$1
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
     --function="getNbVotesForCurrentRoundAndIdOption" \
@@ -327,8 +266,8 @@ checkVotes() {
     )
 }
 getNbVotesForProposalIdAndOption() {
-    local ID=1
-    local OPTION=0
+    local ID=$1
+    local OPTION=$2
     (set -x; mxpy contract query "$SC_ADDRESS" \
     $PROXY_ARGUMENT \
     --function="nbVotesForProposalIdOption" \
@@ -369,12 +308,5 @@ removeAll() {
     --gas-limit=60000000 \
     --send \
     || return
-    )
-}
-wwwineSC() {
-    (set -x; mxpy contract query erd1qqqqqqqqqqqqqpgqtylxl3ll2emxtgt929n08zut8plvqyyll3jsjdva4t \
-    --proxy=https://gateway.multiversx.com \
-    --function="getStakedNonces" \
-    --arguments erd13w5hlehc42zvhd9u78ylrac9axntn9p9jqn9kvy3c052l8rmt2yqa59l76
     )
 }
