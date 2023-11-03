@@ -1,16 +1,15 @@
 #!/bin/bash
 """ 
 To run a function in this snippet :
-Modify the values USER_PEM / PROXY_ARGUMENT / CHAIN_ARGUMENT / SC_ADDRESS to the needed values
+Modify the values USER_PEM to the needed value
 
 Then run :
-$ source /home/benoit/Bureau/TRT/Smart-contracts/Voting-SC/mx-vote-sc/vote/interaction/add_voters_to_sc.sh
+$ source /PATH/TO/FOLDER/vote/interaction/add_voters_to_sc.sh
 """
 
 USER_PEM="../wallet/wallet-owner.pem"
 OWNER_PEM="../wallet/wallet-mainnet.pem"
 
-SC_ADDRESS="erd1qqqqqqqqqqqqqpgqludp4hayf7nl04tp2898q6wp24p07z2kmusqg2hyzl"
 """
 Let's first make a snapshot of holders with an API call
 https://api.multiversx.com/collections/TRT-956a03/accounts?size=500
