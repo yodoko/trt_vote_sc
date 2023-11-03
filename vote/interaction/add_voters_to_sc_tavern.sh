@@ -1,7 +1,7 @@
 #!/bin/bash
 """ 
 To run a function in this snippet :
-Modify the values USER_PEM / PROXY_ARGUMENT / CHAIN_ARGUMENT / SC_ADDRESS to the needed values
+Modify the values USER_PEM to the needed value
 
 Then run :
 $ source /PATH/TO/FOLDER/vote/interaction/add_voters_to_sc_tavern.sh
@@ -24,7 +24,7 @@ getHoldersTavern > holdersTavern.json
 wait
 
 cat holdersTavern.json | jq -r '.[]| join(",")' > snapshotTavern.csv
-""" Generated snapshot.csv file """
+""" Generated snapshotTavern.csv file """
 cut -d, -f1 snapshotTavern.csv > tmp_snapshotTavern.csv
 """ Removed second column from csv file (here it represents the balance) """
 sort -u tmp_snapshotTavern.csv -o final_snapshotTavern.csv
