@@ -19,7 +19,7 @@ deploy_voter() {
     local OUTFILE="out-voter.json"
 
     (set -x; mxpy --verbose contract deploy --bytecode=$VOTER_CONTRACT \
-        --pem=$USER_PEM \
+        --pem=$OWNER_PEM \
         $PROXY_ARGUMENT $CHAIN_ARGUMENT \
         --outfile="$OUTFILE" --recall-nonce --gas-limit=600000000 \
         --send \
@@ -37,7 +37,7 @@ deploy_voter() {
 
 upgrade_voter() {
     (set -x; mxpy --verbose contract upgrade "$SC_ADDRESS" \
-    --pem=$USER_PEM --bytecode=$VOTER_CONTRACT \
+    --pem=$OWNER_PEM --bytecode=$VOTER_CONTRACT \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --gas-limit=60000000 \
     --outfile="upgrade-devnet.interaction.json" --recall-nonce \
@@ -50,7 +50,7 @@ startRound() {
     QUESTION="Shall we improve this dapp ?"
 
     (set -x; mxpy --verbose contract call "$SC_ADDRESS" \
-    --pem=$USER_PEM \
+    --pem=$OWNER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="startRound" \
     --recall-nonce \
@@ -66,7 +66,7 @@ addOptions() {
     local OPTION2="Yes !"
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$USER_PEM \
+    --pem=$OWNER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="addOptions" \
     --recall-nonce \
@@ -81,7 +81,7 @@ endRound() {
     ROUND_ID=$1
 
     (set -x; mxpy --verbose contract call "$SC_ADDRESS" \
-    --pem=$USER_PEM \
+    --pem=$OWNER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="endRound" \
     --recall-nonce \
@@ -101,7 +101,7 @@ addMultipleHolders() {
     local A5=$5
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$USER_PEM \
+    --pem=$OWNER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="addVoters" \
     --recall-nonce \
@@ -116,7 +116,7 @@ addHolder() {
     local ADDRESS=$1
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$USER_PEM \
+    --pem=$OWNER_PEM \
     $PROXY_ARGUMENT $CHAIN_ARGUMENT \
     --function="addVoters" \
     --recall-nonce \
@@ -221,7 +221,7 @@ vote() {
     local OPTION=$2
 
     (set -x; mxpy contract call "$SC_ADDRESS" \
-    --pem=$USER_PEM \
+    --pem=$OWNER_PEM \
     $PROXY_ARGUMENT \
     --function="vote" \
     --recall-nonce \
